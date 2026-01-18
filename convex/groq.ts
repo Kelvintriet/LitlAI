@@ -243,7 +243,7 @@ export const chat = action({
 export const generateTitle = action({
     args: {
         message: v.string(),
-        conversationId: v.id("conversations"),
+        conversationId: v.string(),
     },
     handler: async (ctx, { message, conversationId }) => {
         console.log("Generating title for chat:", conversationId);
@@ -279,7 +279,7 @@ export const generateTitle = action({
 
             if (title) {
                 await ctx.runMutation(api.conversations.update, {
-                    conversationId,
+                    conversationId: conversationId as any,
                     title
                 });
             }
