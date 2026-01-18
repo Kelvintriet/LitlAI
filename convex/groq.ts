@@ -17,7 +17,7 @@ export const chat = action({
     args: {
         message: v.string(),
         userId: v.id("users"),
-        conversationId: v.string(),
+        conversationId: v.optional(v.string()),
         tools: v.optional(v.array(v.string())),
         model: v.optional(v.string()),
         isGuest: v.optional(v.boolean()),
@@ -27,6 +27,17 @@ export const chat = action({
         const apiKey = getGroqKey();
         if (!apiKey) {
             throw new Error("No GROQ_API_KEY found in environment variables");
+        }
+
+        // Guest Model Downgrade Logic
+        let targetModel = model || "groq/compound";
+        if (isGuest) {
+            // User requested these specific models for guests
+            if (targetModel === "groq/compound-mini") {
+                targetModel = "meta-llama/llama-4-scout-17b-16e-instruct";
+            } else {
+                targetModel = "meta-llama/llama-4-maverick-17b-128e-instruct";
+            }
         }
 
         // Declare message ID variable to be shared across scopes
@@ -173,7 +184,7 @@ export const chat = action({
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: model || "groq/compound",
+                model: targetModel,
                 messages: context,
                 stream: true,
             }),

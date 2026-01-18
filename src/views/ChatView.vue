@@ -197,7 +197,7 @@ const handleSend = async () => {
       const result = await convex.action(api.groq.chat, {
         message: text,
         userId: currentUserId.value,
-        conversationId: '000000000000000000000000', // dummy ID
+        // conversationId: undefined, // Handled optionally by backend
         isGuest: true,
         guestHistory: historyForAI,
         model: selectedModel.value,
