@@ -17,7 +17,7 @@ export const chat = action({
     args: {
         message: v.string(),
         userId: v.id("users"),
-        conversationId: v.id("conversations"),
+        conversationId: v.string(),
         tools: v.optional(v.array(v.string())),
         model: v.optional(v.string()),
         isGuest: v.optional(v.boolean()),
@@ -40,7 +40,7 @@ export const chat = action({
                 content: m.content
             }));
         } else {
-            const history = await ctx.runQuery(api.messages.list, { conversationId });
+            const history = await ctx.runQuery(api.messages.list, { conversationId: conversationId as any });
             console.log("History length:", history.length);
             context = history.slice(-20).map(m => ({
                 role: m.author === "user" ? "user" : "assistant",
@@ -118,7 +118,7 @@ export const chat = action({
                     body: `Searching with query: "${query}"...`,
                     author: "ai",
                     userId,
-                    conversationId,
+                    conversationId: conversationId as any,
                 });
 
                 // Step B: Execute Tavily Search
@@ -162,7 +162,7 @@ export const chat = action({
                 body: "",
                 author: "ai",
                 userId,
-                conversationId,
+                conversationId: conversationId as any,
             });
         }
 
@@ -195,7 +195,7 @@ export const chat = action({
             if (!isGuest && context.length <= 1) {
                 ctx.runAction(api.groq.generateTitle, {
                     message,
-                    conversationId
+                    conversationId: conversationId as any
                 }).catch(e => console.error("Naming failed", e));
             }
 
