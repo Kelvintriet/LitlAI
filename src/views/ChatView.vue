@@ -14,7 +14,8 @@ const convex = useConvexClient()
 
 // 2. State & Constants
 const currentUserId = ref(Cookies.get('chatbot_user_id'))
-const conversationId = computed(() => route.params.id)
+const guestConversationId = ref(null); // Local ID for guests (no URL change)
+const conversationId = computed(() => route.params.id || guestConversationId.value)
 
 const newMessage = ref('')
 const isTyping = ref(false)
@@ -193,11 +194,21 @@ const handleSend = async () => {
     scrollToBottom();
 
     try {
-      // 5. Call AI action with isGuest: true
+      // 4a. Create conversation for guest if not exists
+      let guestConvId = conversationId.value;
+      if (!guestConvId) {
+         // Check if we have one stored in local state for this session
+         // For now, simple: create one if route param is missing
+         const title = "New Chat...";
+         guestConvId = await createConversationMutation.mutate({ title, userId: currentUserId.value });
+         guestConversationId.value = guestConvId; // Persist for this session
+      }
+
+      // 5. Call AI action with REAL ID
       const result = await convex.action(api.groq.chat, {
         message: text,
         userId: currentUserId.value,
-        // conversationId: undefined, // Handled optionally by backend
+        conversationId: guestConvId,
         isGuest: true,
         guestHistory: historyForAI,
         model: selectedModel.value,

@@ -17,7 +17,7 @@ export const chat = action({
     args: {
         message: v.string(),
         userId: v.id("users"),
-        conversationId: v.optional(v.string()),
+        conversationId: v.id("conversations"),
         tools: v.optional(v.array(v.string())),
         model: v.optional(v.string()),
         isGuest: v.optional(v.boolean()),
