@@ -14,7 +14,8 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
-convex/*
+# Convex
+convex/_generated
 !.vscode/extensions.json
 .idea
 .DS_Store
