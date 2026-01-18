@@ -3,7 +3,7 @@ import { ref, watch, nextTick, computed, onMounted, onUnmounted } from 'vue'
 import { useConvexQuery, useConvexMutation, useConvexClient } from 'convex-vue'
 import { api } from '../../convex/_generated/api'
 import { useRoute, useRouter } from 'vue-router'
-import Cookies from '../../node_modules/@types/js-cookie'
+import Cookies from 'js-cookie'
 import AuthPage from '../components/AuthPage.vue'
 import { marked } from 'marked'
 

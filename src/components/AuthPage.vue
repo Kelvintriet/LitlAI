@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useConvexMutation } from 'convex-vue'
 import { api } from '../../convex/_generated/api'
-import Cookies from '../../node_modules/@types/js-cookie'
+import Cookies from 'js-cookie'
 
 const emit = defineEmits(['auth-success', 'close'])
 
