@@ -603,6 +603,38 @@ body {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* Katex Spacing */
+.katex-display {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* MD specific overrides */
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
+  text-align: left;
+}
+
+.markdown-body th {
+  background: var(--hover-bg);
+  font-weight: 600;
+}
+
+.markdown-body tr:nth-child(even) {
+  background-color: #fcfcfc;
+}
+
 /* Override color for specific tools if needed */
 .active-tool-badge .tool-icon-small {
   display: flex;

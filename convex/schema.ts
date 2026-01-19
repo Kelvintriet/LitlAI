@@ -7,6 +7,8 @@ export default defineSchema({
         passwordHash: v.optional(v.string()),
         isGuest: v.optional(v.boolean()),
         messageCount: v.optional(v.number()),
+        customInstructions: v.optional(v.string()), // User personalization
+        smartAutoTools: v.optional(v.boolean()), // Preference for Smart Auto
     }).index("by_username", ["username"]),
 
     conversations: defineTable({

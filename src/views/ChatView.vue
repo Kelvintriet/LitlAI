@@ -116,6 +116,25 @@ const { data: currentUser } = useConvexQuery(api.users.get, computed(() => ({ us
 const createConversationMutation = useConvexMutation(api.conversations.create)
 const sendMessageMutation = useConvexMutation(api.messages.send)
 const removeConversationMutation = useConvexMutation(api.conversations.remove)
+// Settings logic
+const updateInstructionsMutation = useConvexMutation(api.users.updateCustomInstructions)
+const isSettingsModalOpen = ref(false)
+const customInstructions = ref('')
+
+watch(currentUser, (user) => {
+  if (user && user.customInstructions) {
+    customInstructions.value = user.customInstructions
+  }
+}, { immediate: true })
+
+const handleSaveSettings = async () => {
+    if (!currentUserId.value) return;
+    await updateInstructionsMutation.mutate({ 
+        userId: currentUserId.value, 
+        instructions: customInstructions.value 
+    });
+    isSettingsModalOpen.value = false;
+}
 
 // 7. Computed Logic
 const displayName = computed(() => {
@@ -597,7 +616,7 @@ marked.setOptions({ breaks: true, gfm: true })
         <div class="sidebar-footer" v-if="currentUser && !currentUser.isGuest">
           <!-- User Menu Dropdown -->
           <div v-if="isUserMenuOpen" class="user-menu" @click.stop>
-            <button class="menu-item">Settings</button>
+            <button class="menu-item" @click="router.push('/settings')">Settings</button>
             <button @click="handleLogout" class="menu-item logout">Log out</button>
           </div>
 
@@ -940,6 +959,32 @@ marked.setOptions({ breaks: true, gfm: true })
         </div>
       </div>
     </div>
+    <!-- Settings Modal -->
+    <div v-if="isSettingsModalOpen" class="search-modal-overlay" @click.self="isSettingsModalOpen = false">
+      <div class="search-modal" style="max-width: 500px">
+        <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light);">
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin: 0;">Settings</h3>
+          <button @click="isSettingsModalOpen = false" style="background:none; border:none; cursor:pointer;" v-html="Icons.Close"></button>
+        </div>
+        <div style="padding: 1.5rem; overflow-y: auto;">
+            <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem;">Custom Instructions</label>
+            <textarea 
+                v-model="customInstructions" 
+                placeholder="What would you like LitlAI to know about you to provide better responses?"
+                style="width: 100%; height: 150px; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-light); font-family: inherit; font-size: 0.95rem; resize: none;"
+            ></textarea>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                These instructions will be added to every new chat.
+            </p>
+        </div>
+        <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end;">
+            <button @click="handleSaveSettings" style="background: #171717; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                Save
+            </button>
+        </div>
+      </div>
+    </div>
+
   </template>
 </template>
 

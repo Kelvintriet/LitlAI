@@ -59,10 +59,47 @@ export const chat = action({
             }));
         }
 
+        // 1.5 Fetch User & Custom Instructions
+        let userProfile = null;
+        try {
+            userProfile = await ctx.runQuery(api.users.get, { userId });
+            if (userProfile && userProfile.customInstructions) {
+                context.unshift({ role: "system", content: `User Custom Instructions:\n${userProfile.customInstructions}` });
+            }
+        } catch (e) { console.error("Error fetching user instructions", e); }
+
+
         // 2. Handle Tools Logic
-        if (tools) {
+        let activeTools = tools || [];
+
+        // Enable Auto Mode if User Preference is Set
+        if (userProfile && userProfile.smartAutoTools) {
+            activeTools = [...activeTools, 'auto'];
+        }
+
+        // "Smart Auto" Logic
+        if (activeTools.includes('auto')) {
+            const lowerMsg = message.toLowerCase();
+            const autoTools = [];
+
+            // Simple heuristic for now
+            if (lowerMsg.includes('search') || lowerMsg.includes('find') || lowerMsg.includes('latest') || lowerMsg.includes('who is')) {
+                autoTools.push('search');
+            }
+            if (lowerMsg.includes('code') || lowerMsg.includes('python') || lowerMsg.includes('script') || lowerMsg.includes('calculate')) {
+                autoTools.push('code_interpreter');
+            }
+            if (lowerMsg.includes('plan') || lowerMsg.includes('write') || lowerMsg.includes('draft') || lowerMsg.includes('sidebar')) {
+                autoTools.push('canvas');
+            }
+
+            // Merge detected tools
+            activeTools = [...new Set([...activeTools, ...autoTools])];
+        }
+
+        if (activeTools.length > 0) {
             // Code Interpreter System Prompt
-            if (tools.includes('code_interpreter')) {
+            if (activeTools.includes('code_interpreter')) {
                 const codePrompt = "You have access to a Python 3 code interpreter. " +
                     "To solve calculations, data processing, or logic tasks, WRITE PYTHON CODE " +
                     "inside a markdown block like ```python ... ```. " +
@@ -72,7 +109,7 @@ export const chat = action({
             }
 
             // Canvas Logic
-            if (tools.includes('canvas')) {
+            if (activeTools.includes('canvas')) {
                 const canvasPrompt = "You can generate standalone content blocks called 'Canvas'. " +
                     "Use <canvas type=\"widget\" title=\"Title\">CONTENT</canvas> for short items (emails, single functions, brief notes). " +
                     "Use <canvas type=\"sidebar\" title=\"Title\">CONTENT</canvas> for long articles, complex code files (e.g. over 15 lines), or full documents. " +
@@ -82,7 +119,7 @@ export const chat = action({
             }
 
             // Search Logic
-            if (tools.includes('search')) {
+            if (activeTools.includes('search')) {
                 const tavilyKey = process.env.TAVILY_API_KEY;
                 if (!tavilyKey) {
                     throw new Error("TAVILY_API_KEY is not set");

@@ -79,3 +79,17 @@ export const get = query({
         return await ctx.db.get(userId);
     },
 });
+
+export const updateCustomInstructions = mutation({
+    args: { userId: v.id("users"), instructions: v.string() },
+    handler: async (ctx, { userId, instructions }) => {
+        await ctx.db.patch(userId, { customInstructions: instructions });
+    }
+});
+
+export const updateSmartAutoTools = mutation({
+    args: { userId: v.id("users"), enabled: v.boolean() },
+    handler: async (ctx, { userId, enabled }) => {
+        await ctx.db.patch(userId, { smartAutoTools: enabled });
+    }
+});

@@ -20,6 +20,11 @@ const router = createRouter({
             component: ChatView
         },
         {
+            path: '/settings',
+            name: 'settings',
+            component: () => import('../views/SettingsView.vue')
+        },
+        {
             path: '/login',
             redirect: to => {
                 return { path: '/demo', query: { auth: 'login' } }
