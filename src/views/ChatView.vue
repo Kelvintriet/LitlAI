@@ -102,7 +102,13 @@ const renderMarkdown = (text) => {
 
   // Handle <think> tags (Reasoning)
   processed = processed.replace(/<think>([\s\S]*?)(?:<\/think>|$)/gi, (match, thought) => {
-      return `<div class="thought-block"><div class="thought-header">Thought Process</div><div class="thought-content">${thought}</div></div>`;
+      return `<details class="thought-details">
+        <summary class="thought-summary">
+          <span class="thought-icon">${Icons.Brain}</span>
+          <span>Thinking...</span>
+        </summary>
+        <div class="thought-content">${thought}</div>
+      </details>`;
   });
 
   // Robust replacement for block math \[ ... \] -> $$ ... $$

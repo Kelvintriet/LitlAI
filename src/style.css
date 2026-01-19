@@ -603,29 +603,48 @@ body {
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* Reasoning Tool: Thought Block */
-.thought-block {
-  margin: 1rem 0;
-  padding: 1rem;
-  background: #f8fafc;
-  border-left: 4px solid #10a37f;
-  border-radius: 8px;
-  font-size: 0.95rem;
+/* Reasoning Tool: Minimal Toggleable Thought Block */
+.thought-details {
+  margin: 0.5rem 0;
+  border: none;
+  font-size: 0.9rem;
 }
 
-.thought-header {
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #10a37f;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
+.thought-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  list-style: none;
+  /* Hide default triangle */
+}
+
+.thought-summary::-webkit-details-marker {
+  display: none;
+  /* Hide default triangle for Safari */
+}
+
+.thought-summary:hover {
+  color: var(--text-main);
+}
+
+.thought-summary .thought-icon {
+  opacity: 0.6;
 }
 
 .thought-content {
-  color: #475569;
+  margin-top: 0.8rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--border-light);
+  color: #64748b;
   line-height: 1.6;
   font-style: italic;
+  white-space: pre-wrap;
 }
 
 /* Katex Spacing */
