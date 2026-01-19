@@ -734,6 +734,12 @@ marked.setOptions({ breaks: true, gfm: true })
                   v-if="msg.author === 'ai'" 
                   class="message-content markdown-body"
                 >
+                  <div class="ai-header" v-if="msg.model">
+                     <span class="model-badge" title="Model used for this response">
+                       <span v-html="Icons.Lightbulb" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px; opacity:0.7;"></span>
+                       {{ msg.model.split('/').pop() }}
+                     </span>
+                  </div>
                   <div v-html="renderMarkdown(msg.body || '')"></div>
                   
                   <!-- Inline Canvas Widget (Show for all types now) -->

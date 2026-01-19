@@ -20,6 +20,7 @@ export default defineSchema({
         userId: v.optional(v.id("users")),
         conversationId: v.optional(v.id("conversations")),
         canvasId: v.optional(v.id("canvases")),
+        model: v.optional(v.string()), // Track which AI model generated this message
         timestamp: v.number(),
     }).index("by_conversationId", ["conversationId"]),
 

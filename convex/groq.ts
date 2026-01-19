@@ -174,6 +174,7 @@ export const chat = action({
                 author: "ai",
                 userId,
                 conversationId: conversationId as any,
+                model: targetModel // Store the model used
             });
         }
 
@@ -202,8 +203,8 @@ export const chat = action({
         let lastUpdate = Date.now();
 
         if (reader) {
-            // Smart Naming - skip for guest, run in background if first message
-            if (!isGuest && context.length <= 1) {
+            // Smart Naming - run in background if first message (works for guests too now due to real IDs)
+            if (context.length <= 1) {
                 ctx.runAction(api.groq.generateTitle, {
                     message,
                     conversationId: conversationId as any

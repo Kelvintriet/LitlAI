@@ -18,14 +18,16 @@ export const send = mutation({
         body: v.string(),
         author: v.string(),
         userId: v.id("users"),
-        conversationId: v.id("conversations")
+        conversationId: v.id("conversations"),
+        model: v.optional(v.string())
     },
-    handler: async (ctx, { body, author, userId, conversationId }) => {
+    handler: async (ctx, { body, author, userId, conversationId, model }) => {
         return await ctx.db.insert("messages", {
             body,
             author,
             userId,
             conversationId,
+            model,
             timestamp: Date.now(),
         });
     },
