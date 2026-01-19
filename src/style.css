@@ -603,6 +603,31 @@ body {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* Reasoning Tool: Thought Block */
+.thought-block {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-left: 4px solid #10a37f;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.thought-header {
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #10a37f;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.thought-content {
+  color: #475569;
+  line-height: 1.6;
+  font-style: italic;
+}
+
 /* Katex Spacing */
 .katex-display {
   margin: 1.5rem 0;

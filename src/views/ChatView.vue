@@ -75,7 +75,8 @@ const Icons = {
   Download: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
   Check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>',
   ChevronDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>',
-  Eye: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+  Eye: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  Brain: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54z"/></svg>'
 }
 
 // 5. Core Utility Functions
@@ -98,6 +99,11 @@ const renderMarkdown = (text) => {
   
   // Replace <canvas ...>...</canvas> with an empty string but keep rest of content
   let processed = text.replace(/<canvas\s+type="[^"]+" title="[^"]+">[\s\S]*?(?:<\/canvas>|$)/gi, '');
+
+  // Handle <think> tags (Reasoning)
+  processed = processed.replace(/<think>([\s\S]*?)(?:<\/think>|$)/gi, (match, thought) => {
+      return `<div class="thought-block"><div class="thought-header">Thought Process</div><div class="thought-content">${thought}</div></div>`;
+  });
 
   // Robust replacement for block math \[ ... \] -> $$ ... $$
   processed = processed.replace(/\\\[([\s\S]*?)\\\]/g, (_, equation) => `$$${equation}$$`);
@@ -703,10 +709,21 @@ marked.setOptions({ breaks: true, gfm: true })
                           <span class="tool-icon-small" v-html="Icons.Canvas"></span>
                           <span>Canvas</span>
                         </button>
+                        <button v-if="activeTool === 'reasoning'" class="active-tool-badge" @click="toggleTool('reasoning')">
+                          <span class="tool-icon-small" v-html="Icons.Brain"></span>
+                          <span>Reasoning</span>
+                        </button>
 
                         <!-- Tools Dropdown -->
                         <div v-if="isToolsMenuOpen" class="tools-menu" @click.stop>
                            <div class="tools-menu-header">Add capability</div>
+                           <button class="tools-menu-item" @click="toggleTool('reasoning')">
+                              <span class="tool-icon" v-html="Icons.Brain"></span>
+                              <div class="tool-info">
+                                <span class="tool-name">Reasoning</span>
+                                <span class="tool-desc">Deep thought process</span>
+                              </div>
+                           </button>
                            <button class="tools-menu-item" @click="toggleTool('code_interpreter')">
                               <span class="tool-icon" v-html="Icons.Terminal"></span>
                               <div class="tool-info">
@@ -714,7 +731,6 @@ marked.setOptions({ breaks: true, gfm: true })
                                 <span class="tool-desc">Run Python code</span>
                               </div>
                            </button>
-                           <!-- Placeholder for future tools -->
                            <button class="tools-menu-item" @click="toggleTool('search')">
                               <span class="tool-icon" v-html="Icons.Global"></span>
                               <div class="tool-info">
@@ -830,10 +846,21 @@ marked.setOptions({ breaks: true, gfm: true })
                           <span class="tool-icon-small" v-html="Icons.Canvas"></span>
                           <span>Canvas</span>
                         </button>
+                        <button v-if="activeTool === 'reasoning'" class="active-tool-badge" @click="toggleTool('reasoning')">
+                          <span class="tool-icon-small" v-html="Icons.Brain"></span>
+                          <span>Reasoning</span>
+                        </button>
 
                         <!-- Tools Dropdown (Reuse styles) -->
                         <div v-if="isToolsMenuOpen" class="tools-menu bottom-up" @click.stop>
                            <div class="tools-menu-header">Add capability</div>
+                           <button class="tools-menu-item" @click="toggleTool('reasoning')">
+                              <span class="tool-icon" v-html="Icons.Brain"></span>
+                              <div class="tool-info">
+                                <span class="tool-name">Reasoning</span>
+                                <span class="tool-desc">Deep thought process</span>
+                              </div>
+                           </button>
                            <button class="tools-menu-item" @click="toggleTool('code_interpreter')">
                               <span class="tool-icon" v-html="Icons.Terminal"></span>
                               <div class="tool-info">

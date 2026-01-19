@@ -92,12 +92,23 @@ export const chat = action({
             if (lowerMsg.includes('plan') || lowerMsg.includes('write') || lowerMsg.includes('draft') || lowerMsg.includes('sidebar')) {
                 autoTools.push('canvas');
             }
+            if (lowerMsg.includes('solve') || lowerMsg.includes('logic') || lowerMsg.includes('math') || lowerMsg.includes('reason') || lowerMsg.includes('step by step') || lowerMsg.includes('why')) {
+                autoTools.push('reasoning');
+            }
 
             // Merge detected tools
             activeTools = [...new Set([...activeTools, ...autoTools])];
         }
 
         if (activeTools.length > 0) {
+            if (activeTools.includes('reasoning')) {
+                const reasoningPrompt = "You MUST use a chain-of-thought process for this request. " +
+                    "Start your response with a <think> ... </think> block detailing your logic, step-by-step analysis, and potential caveats. " +
+                    "ONLY AFTER the </think> block should you provide your final output. " +
+                    "Make the thought process deep and rigorous.";
+                context.unshift({ role: "system", content: reasoningPrompt });
+            }
+
             // Code Interpreter System Prompt
             if (activeTools.includes('code_interpreter')) {
                 const codePrompt = "You have access to a Python 3 code interpreter. " +
